@@ -28,6 +28,7 @@ Func CheckPrerequisites()
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
 	EndIf
 	If isEveryFileInstalled() = False Then Exit
+	If Not checkAutoitVersion() Then Exit
 EndFunc   ;==>CheckPrerequisites
 
 Func isNetFramework4Installed()
@@ -74,14 +75,14 @@ Func isEveryFileInstalled()
 
 	; folders and files needed checking
 	Local $aCheckFiles[9] = [@ScriptDir & "\COCBot", _
-							$LibDir, _
-							@ScriptDir & "\Images", _
-							$pFuncLib, _
-							$pImageLib, _
-							$pImgLib, _
-							$pIconLib, _
-							$LibDir & "\opencv_core220.dll", _
-							$LibDir & "\opencv_imgproc220.dll"]
+			$LibDir, _
+			@ScriptDir & "\Images", _
+			$pFuncLib, _
+			$pImageLib, _
+			$pImgLib, _
+			$pIconLib, _
+			$LibDir & "\opencv_core220.dll", _
+			$LibDir & "\opencv_imgproc220.dll"]
 
 	For $vElement In $aCheckFiles
 		$iCount += FileExists($vElement)
@@ -92,35 +93,51 @@ Func isEveryFileInstalled()
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
 
 		Local $sText1, $sText2, $MsgBox
-		$sText1 = "Hey Chief, we are missing some files!"
-		$sText2 = "Please extract all files and folders and start this program again!"
-		$sText3 = "Sorry, Start button disabled until fixed!"
+		$sText1 = GetTranslated(640,11,"Hey Chief, we are missing some files!")
+		$sText2 = GetTranslated(640,12,"Please extract all files and folders and start this program again!")
+		$sText3 = GetTranslated(640,13,"Sorry, Start button disabled until fixed!")
 
 		Setlog($sText1, $COLOR_RED)
 		Setlog($sText2, $COLOR_RED)
 		Setlog($sText3, $COLOR_RED)
 
 		_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-		$MsgBox = _ExtMsgBox(48, "Ok", $sText1, $sText2, 0, $frmBot)
+		$MsgBox = _ExtMsgBox(48, GetTranslated(640,14,"Ok"), $sText1, $sText2, 0, $frmBot)
 		GUICtrlSetState($btnStart, $GUI_DISABLE)
 		;Exit
 	EndIf
 	If @Compiled Then;if .exe
 		If Not StringInStr(@ScriptFullPath, "MyBot.run.exe", 1) Then; if filename isn't MyBot.run.exe
 			Local $sText1, $sText2, $MsgBox
-			$sText1 = "Hey Chief, file name incorrect!"
-			$sText2 = 'You have renamed the file "MyBot.run.exe"! Please change it back to MyBot.run.exe and restart the bot!'
-			$sText3 = "Sorry, Start button disabled until fixed!"
+			$sText1 = GetTranslated(640,15,"Hey Chief, file name incorrect!")
+			$sText2 = GetTranslated(640,16,'You have renamed the file "MyBot.run.exe"! Please change it back to MyBot.run.exe and restart the bot!')
+			$sText3 = GetTranslated(640,13,"Sorry, Start button disabled until fixed!")
 
 			Setlog($sText1, $COLOR_RED)
 			Setlog($sText2, $COLOR_RED)
 			Setlog($sText3, $COLOR_RED)
 
 			_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
-			$MsgBox = _ExtMsgBox(48, "Ok", $sText1, $sText2, 0, $frmBot)
+			$MsgBox = _ExtMsgBox(48, GetTranslated(640,14,"Ok"), $sText1, $sText2, 0, $frmBot)
 			GUICtrlSetState($btnStart, $GUI_DISABLE)
 			$bResult = False
 		EndIf
 	EndIf
 	Return $bResult
 EndFunc   ;==>isEveryFileInstalled
+
+Func checkAutoitVersion()
+	If @Compiled = True Then Return 1
+	Local $requiredAutoit = "3.3.14.2"
+	Local $result = _VersionCompare(@AutoItVersion, $requiredAutoit)
+	If $result = 0 Or $result = 1 Then Return 1
+	Local $sText1, $sText2, $MsgBox
+	$sText1 = "Hey Chief, your AutoIt version is out of date!"
+	$sText3 = "Click OK to download the latest version of AutoIt."
+	$sText2 = "The bot requires AutoIt version "&$requiredAutoit&" or above. Your version of AutoIt is "&@AutoItVersion&"." & @CRLF & $sText3 & @CRLF &"After installing the new version, open the bot again."
+	_ExtMsgBoxSet(1 + 64, $SS_CENTER, 0x004080, 0xFFFF00, 12, "Comic Sans MS", 500)
+	$MsgBox = _ExtMsgBox(48, "OK|Cancel", $sText1, $sText2, 0, $frmBot)
+	If $MsgBox = 1 Then ShellExecute("https://www.autoitscript.com/site/autoit/downloads/")
+	Return 0
+EndFunc
+

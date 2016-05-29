@@ -56,13 +56,13 @@ Func getPBTInfo()
 		If _Sleep($iPersonalShield2) Then Return
 		$Result = getAttackDisable(180, 156 + $midOffsetY) ; Try to grab Ocr for PBT warning message as it can randomly block pixel check
 		If $debugSetlog = 1 Then Setlog("OCR PBT warning= " & $Result, $COLOR_PURPLE)
-		If (StringLen($Result) > 3) And StringRegExp($Result, "[a-w]", $STR_REGEXPMATCH) Then  ; Check string for valid characters
+		If (StringLen($Result) > 3) And StringRegExp($Result, "[a-w]", $STR_REGEXPMATCH) Then ; Check string for valid characters
 			Setlog("Personal Break Warning found!", $COLOR_BLUE)
 			$bPBTStart = True
 			ExitLoop
 		EndIf
 		$iCount += 1
-		If $iCount > 20 Then  ; Wait ~10-12 seconds for window to open before error return
+		If $iCount > 20 Then ; Wait ~10-12 seconds for window to open before error return
 			Setlog("PBT information window failed to open", $COLOR_PURPLE)
 			If $debugImageSave = 1 Then DebugImageSave("PBTInfo_", $bCapturePixel, "png", False)
 			ClickP($aAway, 1, 0, "#9999") ; close window if opened
@@ -73,7 +73,7 @@ Func getPBTInfo()
 
 	If _CheckPixel($aIsShieldInfo, $bCapturePixel) Or $bPBTStart Then
 
-		$sTimeResult = getOcrPBTtime(555, 499  + $midOffsetY) ; read PBT time
+		$sTimeResult = getOcrPBTtime(555, 499 + $midOffsetY) ; read PBT time
 		If $debugSetlog = 1 Then Setlog("OCR PBT Time= " & $sTimeResult, $COLOR_PURPLE)
 		If $sTimeResult = "" Then ; try a 2nd time after a short delay if slow PC and null read
 			If _Sleep($iPersonalShield2) Then Return ; pause for slow PC
@@ -144,30 +144,4 @@ Func getPBTInfo()
 		If $debugSetlog = 1 Then SetLog("PBT Info window failed to open for PBT OCR", $COLOR_RED)
 	EndIf
 
-EndFunc   ;==>getPBTinfo
-
-#comments-start
-	; Begin Test code example for using PBT time,can be used to implement smart PB management
-
-$DebugSetlog = 1
-		Local $aResult = GetPBTInfo() ; Get PBT information
-		If @error Then Setlog("strange PBT error= " &@error& ", Extended= " & @extended, $COLOR_RED)
-		If IsArray($aResult) Then
-			Local $iTimeTillPBTstartSec = Int(_DateDiff('s', $aResult[2], _NowCalc())) ; time in seconds
-			If $debugSetlog = 1 Then
-				Setlog("GetPBTinfo() return String|String|String : " & $aResult[0] &"|" & $aResult[1] & "|" & $aResult[2], $COLOR_PURPLE)
-				Setlog("Have shield type: " & $aResult[0], $COLOR_PURPLE)
-				Setlog("Remaining time till PBT: " & $aResult[1], $COLOR_PURPLE)
-				Setlog("PBT starts on: " & $iTimeTillPBTstartSec & " Seconds", $COLOR_PURPLE)
-			Endif
-			If $iTimeTillPBTStartsec >= 0 Then  ; test if PBT date/time in past
-				Setlog("Start Personal Break Now!", $COLOR_GREEN)
-				; Do Something useful!!
-			Endif
-		Else
-			If $debugSetlog = 1 Then Setlog("?? GetPBTtime returned: " & $aResult , $COLOR_RED)
-		EndIf
-$DebugSetlog = 0
-
-	; End Test code
-#comments-end
+EndFunc   ;==>getPBTInfo

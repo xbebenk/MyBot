@@ -15,7 +15,7 @@
 ; ===============================================================================================================================
 ;
 Func checkObstacles() ;Checks if something is in the way for mainscreen
-	Local $x, $y
+	Local $x, $y, $result
 	$MinorObstacle = False
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	; Detect All Reload Button errors => 1- Another device, 2- Take a break, 3- Connection lost or error, 4- Out of sync, 5- Inactive, 6- Maintenance
@@ -40,6 +40,7 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 			If _SleepStatus($sTimeWakeUp * 1000) Then Return ; Wait as long as user setting in GUI, default 120 seconds
 			PureClickP($aReloadButton, 1, 0, "#0127");Check for "Another device" message
 			If _Sleep(2000) Then Return
+			If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 			Return True
 		EndIf
 		;;;;;;;##### 2- Take a break #####;;;;;;;
@@ -48,19 +49,62 @@ Func checkObstacles() ;Checks if something is in the way for mainscreen
 			PushMsg("TakeBreak")
 			If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
 			PureClickP($aReloadButton, 1, 0, "#0128");Click on reload button
+			If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 			Return True
 		EndIf
 		;;;;;;;##### Connection Lost & OoS & Inactive & Maintenance #####;;;;;;;
 		Select
 			Case _CheckPixel($aIsInactive, $bNoCapturePixel) ; Inactive only
 				SetLog("Village was Inactive, Reloading CoC...", $COLOR_RED)
+				If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
 			Case _CheckPixel($aIsConnectLost, $bNoCapturePixel) ; Connection Lost
 				SetLog("Connection lost, Reloading CoC...", $COLOR_RED)
 			Case _CheckPixel($aIsCheckOOS, $bNoCapturePixel) ; Check OoS
 				SetLog("Out of Sync Error, Reloading CoC...", $COLOR_RED)
-			Case _CheckPixel($aIsMaintenance, $bNoCapturePixel) ; Check OoS
-				SetLog("Maintenance Break, waiting...", $COLOR_RED)
-				If _SleepStatus($iDelaycheckObstacles4) Then Return ; 2 Minutes
+			Case _CheckPixel($aIsMaintenance, $bNoCapturePixel) ; Check Maintenance
+				$result = getOcrMaintenanceTime(171, 345 + $midOffsetY) ; OCR text to find wait time
+				Local $iMaintenanceWaitTime = 0
+				Select
+					Case $result = ""
+						$iMaintenanceWaitTime = $iDelaycheckObstacles4 ; Wait 2 min
+					Case StringInStr($result, "few", $STR_NOCASESENSEBASIC)
+						$iMaintenanceWaitTime = $iDelaycheckObstacles4 ; Wait 2 min
+					Case StringInStr($result, "10", $STR_NOCASESENSEBASIC)
+						$iMaintenanceWaitTime = $iDelaycheckObstacles6 ; Wait 5 min
+					Case StringInStr($result, "15", $STR_NOCASESENSEBASIC)
+						$iMaintenanceWaitTime = $iDelaycheckObstacles6 ; Wait 5 min
+					Case StringInStr($result, "20", $STR_NOCASESENSEBASIC)
+						$iMaintenanceWaitTime = $iDelaycheckObstacles7 ; Wait 10 min
+					Case StringInStr($result, "30", $STR_NOCASESENSEBASIC)
+						$iMaintenanceWaitTime = $iDelaycheckObstacles8 ; Wait 15 min
+					Case StringInStr($result, "45", $STR_NOCASESENSEBASIC)
+						$iMaintenanceWaitTime = $iDelaycheckObstacles8 ; Wait 15 min
+					Case Else
+						$iMaintenanceWaitTime = $iDelaycheckObstacles4 ; Wait 2 min
+						SetLog("Error reading Maintenance Break time?", $COLOR_RED)
+				EndSelect
+				SetLog("Maintenance Break, waiting: " & $iMaintenanceWaitTime / 60000 & " minutes....", $COLOR_RED)
+				If $ichkSinglePBTForced = 1 Then $bGForcePBTUpdate = True
+				If _SleepStatus($iMaintenanceWaitTime) Then Return
+			Case Else
+				;  Add check for game update and Rate CoC error messages
+				If $debugImageSave = 1 Then DebugImageSave("ChkObstaclesReloadMsg_")  ; debug only
+				$result = getOcrMaintenanceTime(171, 325 + $midOffsetY) ; OCR text for "Good News!"
+				If $debugsetlog = 1 Then SetLog("Check Obstacles getOCRMaintenanceTime= " & $result, $COLOR_PURPLE)  ; debug only
+				If StringInStr($result, "new", $STR_NOCASESENSEBASIC) Then
+					SetLog("Game Update is required, Bot must stop!!", $COLOR_RED)
+					Btnstop() ; stop bot
+					Return True
+				EndIf
+				$result = getOcrRateCoc(228, 380 + $midOffsetY)
+				If $debugsetlog = 1 Then SetLog("Check Obstacles getOCRRateCoC= " & $result, $COLOR_PURPLE)  ; debug only
+				If StringInStr($result, "never", $STR_NOCASESENSEBASIC) Then
+					SetLog("Clash feedback window found, permanently closed!", $COLOR_RED)
+					PureClick(248, 408 + $midOffsetY, 1, 0, "#9999") ; Click on never to close window and stop reappear. Never=248,408 & Later=429,408
+					$MinorObstacle = True
+					Return True
+				EndIf
+				SetLog("Warning: Can not find type of Reload error message", $COLOR_RED)
 		EndSelect
 		PureClickP($aReloadButton, 1, 0, "#0131"); Click for out of sync or inactivity or connection lost or maintenance
 		If _Sleep($iDelaycheckObstacles3) Then Return

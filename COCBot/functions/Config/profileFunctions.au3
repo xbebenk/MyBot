@@ -17,19 +17,32 @@ Func setupProfileComboBox()
 	Else
 		; Lets create a new array without the first entry which is a count for populating the combo box
 		Local $aProfileList[$aProfiles[0]]
-		For $i = 1 to $aProfiles[0]
+		For $i = 1 To $aProfiles[0]
 			$aProfileList[$i - 1] = $aProfiles[$i]
 		Next
 
 		; Convert the array into a string
 		$profileString = _ArrayToString($aProfileList, "|")
-	EndIF
+	EndIf
 
 	; Clear the combo box current data in case profiles were deleted
 	GUICtrlSetData($cmbProfile, "", "")
 	; Set the new data of available profiles
 	GUICtrlSetData($cmbProfile, $profileString, "<No Profiles>")
 EndFunc   ;==>setupProfileComboBox
+
+Func renameProfile()
+	Local $originalPath = $sProfilePath & "\" & GUICtrlRead($cmbProfile)
+	Local $newPath = $sProfilePath & "\" & $sCurrProfile
+	If FileExists($originalPath) Then
+		; Close the logs to ensure all files can be deleted.
+		FileClose($hLogFileHandle)
+		FileClose($hAttackLogFileHandle)
+
+		; Remove the directory and all files and sub folders.
+		DirMove($originalPath, $newPath, $FC_NOOVERWRITE)
+	EndIf
+EndFunc   ;==>deleteProfile
 
 Func deleteProfile()
 	Local $deletePath = $sProfilePath & "\" & GUICtrlRead($cmbProfile)
@@ -49,7 +62,7 @@ Func createProfile()
 
 	; If the Profiles file does not exist create it.
 	If Not FileExists($sProfilePath & "\profile.ini") Then
-		Local $hFile = FileOpen($sProfilePath & "\profile.ini", BitOR($FO_APPEND, $FO_CREATEPATH))
+		Local $hFile = FileOpen($sProfilePath & "\profile.ini", $FO_APPEND + $FO_CREATEPATH)
 		FileWriteLine($hFile, "[general]")
 		FileClose($hFile)
 	EndIf
@@ -79,11 +92,11 @@ Func setupProfile()
 		$sCurrProfile = GUICtrlRead($cmbProfile)
 	EndIf
 
-	; Create the profile if needed
+	; Create the profile if needed, this also sets the variables if the profile exists.
 	createProfile()
 	; Set the profile name on the village info group.
-	GUICtrlSetData($grpVillage, GetTranslated(13, 21, "Village") & ": " & $sCurrProfile)
-	GUICtrlSetData($OrigPushB, $sCurrProfile)
+	GUICtrlSetData($grpVillage, GetTranslated(603, 32, "Village") & ": " & $sCurrProfile)
+	GUICtrlSetData($OrigPushBullet, $sCurrProfile)
 EndFunc   ;==>setupProfile
 
 Func selectProfile()
@@ -97,11 +110,11 @@ Func selectProfile()
 		createProfile()
 		readConfig()
 		applyConfig()
-		_GUICtrlComboBox_SetCurSel($cmbProfile, 0)
 
+		_GUICtrlComboBox_SetCurSel($cmbProfile, 0)
 	EndIf
 
 	; Set the profile name on the village info group.
-	GUICtrlSetData($grpVillage, GetTranslated(13, 21, "Village") & ": " & $sCurrProfile)
-	GUICtrlSetData($OrigPushB, $sCurrProfile)
+	GUICtrlSetData($grpVillage, GetTranslated(603, 32, "Village") & ": " & $sCurrProfile)
+	GUICtrlSetData($OrigPushBullet, $sCurrProfile)
 EndFunc   ;==>selectProfile

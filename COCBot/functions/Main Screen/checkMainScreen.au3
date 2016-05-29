@@ -19,18 +19,23 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 	Local $iCount, $Result
 	If $Check = True Then
 		SetLog("Trying to locate Main Screen")
-		_WinAPI_EmptyWorkingSet(WinGetProcess($Title)) ; Reduce BlueStacks Memory Usage
+		_WinAPI_EmptyWorkingSet(WinGetProcess($HWnD)) ; Reduce Android Memory Usage
 	Else
 		;If $debugsetlog = 1 Then SetLog("checkMainScreen start quiet mode", $COLOR_PURPLE)
     EndIf
-	WinGetAndroidHandle()
-	If $HWnD = 0 Then
-		OpenAndroid(True)
+	Local $hWin = $HWnD
+	If WinGetAndroidHandle() = 0 Then
+		If $hWin = 0 Then
+		   OpenAndroid(True)
+		Else
+		   RebootAndroid()
+	    EndIf
 		Return
     EndIf
 	getBSPos() ; Update $HWnd and Android Window Positions
 	If $ichkBackground = 0 And $NoFocusTampering = False Then
 	    Local $hTimer = TimerInit(), $hWndActive = -1
+		Local $activeHWnD = WinGetHandle("")
 		While TimerDiff($hTimer) < 1000 And $hWndActive <> $HWnD And Not _Sleep(100)
 		   getBSPos() ; update $HWnD
 		   $hWndActive = WinActivate($HWnD) ; ensure bot has window focus
@@ -40,6 +45,7 @@ Func checkMainScreen($Check = True) ;Checks if in main screen
 		   RebootAndroid()
 		   Return
 	    EndIf
+		WinActivate($activeHWnD) ; restore current active window
     EndIf
 	$iCount = 0
 	While _CheckPixel($aIsMain, $bCapturePixel) = False

@@ -13,6 +13,9 @@
 ; Example .......: No
 ; ===============================================================================================================================
 
+#include-once
+#include <WinAPISys.au3>
+
 Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
     If $debugClick = 1 Then
 		Local $txt = _DecodeDebug($debugtxt)
@@ -32,7 +35,7 @@ Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 	$y = $y  + $BSrpos[1]
 	If $times <> 1 Then
 		For $i = 0 To ($times - 1)
-			If isProblemAffectBeforeClick() Then
+			If isProblemAffectBeforeClick($i) Then
 				If $debugClick = 1 Then Setlog("VOIDED Click " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_RED, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
@@ -56,12 +59,12 @@ Func Click($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 EndFunc   ;==>Click
 
 Func _ControlClick($x, $y)
-   $AndroidAdbScreencapTimer = 0 ; invalidate ADB screencap timer/timeout
-   Return ControlClick($Title, "", "", "left", "1", $x, $y)
+   ;$AndroidAdbScreencapTimer = 0 ; invalidate ADB screencap timer/timeout
+   Return ControlClick($HWnD, "", "", "left", "1", $x, $y)
 EndFunc
 
-Func isProblemAffectBeforeClick()
-   If FastCaptureRegion() Then Return isProblemAffect(True)
+Func isProblemAffectBeforeClick($iCount = 0)
+   If NeedCaptureRegion($iCount) = True Then Return isProblemAffect(True)
    Return False
 EndFunc
 
@@ -77,7 +80,7 @@ Func PureClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 	EndIf
 
     If $AndroidAdbClick = True Then
-	   AndroidClick($x, $y, $times, $speed)
+	   AndroidClick($x, $y, $times, $speed, False)
 	EndIf
 	If $AndroidAdbClick = True Then
 	   Return
@@ -132,7 +135,7 @@ Func GemClick($x, $y, $times = 1, $speed = 0, $debugtxt = "")
 			   SuspendAndroid($SuspendMode)
 			   Return False
 			EndIf
-			If isProblemAffectBeforeClick() Then
+			If isProblemAffectBeforeClick($i) Then
 				If $debugClick = 1 Then Setlog("VOIDED GemClick " & $x & "," & $y & "," & $times & "," & $speed & " " & $debugtxt & $txt, $COLOR_RED, "Verdana", "7.5", 0)
 				checkMainScreen(False)
 				SuspendAndroid($SuspendMode)
@@ -171,6 +174,14 @@ EndFunc   ;==>GemClick
 Func GemClickP($point, $howMuch = 1, $speed = 0, $debugtxt = "")
 	Return GemClick($point[0], $point[1], $howMuch, $speed, $debugtxt = "")
 EndFunc   ;==>GemClickP
+
+Func AttackClick($x, $y, $times = 1, $speed = 0, $afterDelay = 0, $debugtxt = "")
+   Local $timer = TimerInit()
+   Local $result = Click($x, $y, $times, $speed, $debugtxt)
+   Local $delay = $times * $speed + $afterDelay - TimerDiff($timer)
+   If IsKeepClicksActive() = False And $delay > 0 Then _Sleep($delay, False)
+   Return $result
+EndFunc
 
 Func _DecodeDebug($message)
 	Local $separator = " | "
@@ -371,8 +382,50 @@ Func SendText($sText)
    EndIf
    If $AndroidAdbInput = False Or $error <> 0 Then
 	  Local $SuspendMode = ResumeAndroid()
-	  $Result = ControlSend($HWnD, "", "", $sText, 0)
+	  ;$Result = ControlSend($HWnD, "", "", $sText, 0)
+	  Local $ascText = ""
+	  Local $r, $i, $vk, $shiftBits, $char
+	  Local $c = 0
+	  For $i = 1 To StringLen($sText)
+		 $char = StringMid($sText, $i, 1)
+		 $vk = _VkKeyScan($char)
+		 $shiftBits = @extended
+		 If $vk = -1 And $shiftBits = -1 Then
+			; key not found, skip it
+			SetDebugLog("SendText cannot send character: " & $char)
+			$c += 1
+		 Else
+			If BitAND($shiftBits, 1) > 0 Then $ascText &= "{LSHIFT down}"
+			If BitAND($shiftBits, 2) > 0 Then $ascText &= "{LCTRL down}"
+			If BitAND($shiftBits, 4) > 0 Then $ascText &= "{LALT down}"
+			$ascText &= "{ASC " & _WinAPI_MapVirtualKey($vk, $MAPVK_VK_TO_CHAR) & "}"
+			If BitAND($shiftBits, 4) > 0 Then $ascText &= "{LALT up}"
+			If BitAND($shiftBits, 2) > 0 Then $ascText &= "{LCTRL up}"
+			If BitAND($shiftBits, 1) > 0 Then $ascText &= "{LSHIFT up}"
+			;SetDebugLog("SendText: " & $char & " as " & $ascText)
+			$r = ControlSend($HWnD, "", "", $ascText, 0)
+			$ascText = ""
+			If $r = 1 Then
+			   ;If _Sleep(50) = True Then ExitLoop
+			   $c += 1
+			EndIf
+		 EndIf
+	  Next
+	  $Result = 0
+	  If $c = StringLen($sText) Then $Result = 1
 	  SuspendAndroid($SuspendMode)
    EndIf
    Return $Result
+EndFunc
+
+; return value is VK code
+; @extended contains shift state bits:
+; 1 = SHIFT key
+; 2 = CTRL key
+; 4 = ALT key
+; Source: https://www.autoitscript.com/forum/topic/138681-user32dllvkkeyscan-not-doing-it-right/?do=findComment&comment=971876
+Func _VkKeyScan($s_Char)
+     Local $a_Ret = DllCall("user32.dll", "short", "VkKeyScanW", "ushort", AscW($s_Char))
+     If @error Then Return SetError(@error, @extended, -1)
+     Return SetExtended(BitShift($a_Ret[0], 8), BitAnd($a_Ret[0], 0xFF))
 EndFunc

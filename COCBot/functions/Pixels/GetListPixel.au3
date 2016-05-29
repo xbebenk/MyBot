@@ -36,11 +36,11 @@ EndFunc   ;==>GetListPixel
 
 
 Func GetLocationItem($functionName)
-	If $debugSetLog = 1 or $debugBuildingPos = 1 Then
+	If $debugSetLog = 1 Or $debugBuildingPos = 1 Then
 		Local $hTimer = TimerInit()
 		Setlog("GetLocationItem(" & $functionName & ")", $COLOR_PURPLE)
 	EndIf
-	$resultHere = DllCall($hFuncLib, "str", $functionName, "ptr", $hBitmapFirst)
+	$resultHere = DllCall($hFuncLib, "str", $functionName, "ptr", $hHBitmap2)
 	If UBound($resultHere) > 0 Then
 		If $debugBuildingPos = 1 Then Setlog("#*# " & $functionName & ": " & $resultHere[0] & "calc in " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds ", $COLOR_TEAL)
 		Return GetListPixel($resultHere[0])

@@ -15,19 +15,23 @@
 ; ===============================================================================================================================
 
 Func waitMainScreen() ;Waits for main screen to popup
-    If Not $RunState Then Return
-    Local $iCount
+	If Not $RunState Then Return
+	Local $iCount
 	SetLog("Waiting for Main Screen")
 	$iCount = 0
 	For $i = 0 To 105 ;105*2000 = 3.5 Minutes
-	    If Not $RunState Then Return
+		If Not $RunState Then Return
 		If $debugsetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop
 		$iCount += 1
-		WinGetAndroidHandle()
-		If $HWnD = 0 Then
-			OpenAndroid(True)
+		Local $hWin = $HWnD
+		If WinGetAndroidHandle() = 0 Then
+			If $hWin = 0 Then
+				OpenAndroid(True)
+			Else
+				RebootAndroid()
+			EndIf
 			Return
-	    EndIf
+		EndIf
 		getBSPos() ; Update $HWnd and Android Window Positions
 		_CaptureRegion()
 		If _CheckPixel($aIsMain, $bNoCapturepixel) = True Then ;Checks for Main Screen
@@ -44,10 +48,10 @@ Func waitMainScreen() ;Waits for main screen to popup
 		If Mod($i, 5) = 0 Then;every 10 seconds
 			If $debugImageSave = 1 Then DebugImageSave("WaitMainScreen_", False)
 		EndIf
-		If ($i > 105) Or ($iCount > 120) Then ExitLoop  ; If CheckObstacles forces reset, limit total time to 4 minutes
+		If ($i > 105) Or ($iCount > 120) Then ExitLoop ; If CheckObstacles forces reset, limit total time to 4 minutes
 	Next
 
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 	CloseCoC(True) ; Close then Open CoC
 	If _CheckPixel($aIsMain, True) Then Return ; If its main screen return
 	;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -55,10 +59,10 @@ Func waitMainScreen() ;Waits for main screen to popup
 	; If mainscreen is not found, then fix it
 	$iCount = 0
 	While 1
-	    If Not $RunState Then Return
+		If Not $RunState Then Return
 		SetLog("Unable to load CoC, attempt to fix it...", $COLOR_RED)
 		If $debugsetlog = 1 Then Setlog("Restart Loop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop data
-		CloseAndroid() 	 ; BS must die!
+		CloseAndroid() ; BS must die!
 		If _Sleep(1000) Then Return
 		OpenAndroid(True) ; Open BS and restart CoC
 		If @extended Then
@@ -66,7 +70,7 @@ Func waitMainScreen() ;Waits for main screen to popup
 			Return
 		EndIf
 		If _CheckPixel($aIsMain, $bCapturepixel) = True Then ExitLoop
-		CheckObstacles()  ; Check for random error windows and close them
+		CheckObstacles() ; Check for random error windows and close them
 		$iCount += 1
 		If $iCount > 2 Then ; If we can't restart BS after 2 tries, exit the loop
 			SetLog("Stuck trying to Restart " & $Android & "...", $COLOR_RED)
@@ -77,3 +81,29 @@ Func waitMainScreen() ;Waits for main screen to popup
 	WEnd
 
 EndFunc   ;==>waitMainScreen
+
+Func waitMainScreenMini()
+    If Not $RunState Then Return
+	Local $iCount = 0
+	Local $hTimer = TimerInit()
+	SetDebugLog("waitMainScreenMini")
+	getBSPos() ; Update Android Window Positions
+	SetLog("Waiting for Main Screen after " & $Android & " restart", $COLOR_BLUE)
+	For $i = 0 To 60 ;30*2000 = 1 Minutes
+	    If Not $RunState Then Return
+	    If WinGetAndroidHandle() = 0 Then ExitLoop ; sets @error to 1
+		If $debugsetlog = 1 Then Setlog("ChkObstl Loop = " & $i & "ExitLoop = " & $iCount, $COLOR_PURPLE) ; Debug stuck loop
+		$iCount += 1
+		_CaptureRegion()
+		If _CheckPixel($aIsMain, $bNoCapturepixel) = False Then ;Checks for Main Screen
+			If _Sleep(1000) Then Return
+			If CheckObstacles() Then $i = 0 ;See if there is anything in the way of mainscreen
+		Else
+			SetLog("CoC main window took " & Round(TimerDiff($hTimer) / 1000, 2) & " seconds", $COLOR_GREEN)
+			Return
+		EndIf
+		_StatusUpdateTime($hTimer, "Main Screen")
+		If ($i > 60) Or ($iCount > 80) Then ExitLoop  ; If CheckObstacles forces reset, limit total time to 6 minute before Force restart BS
+	Next
+	Return SetError( 1, 0, -1)
+EndFunc

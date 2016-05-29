@@ -42,8 +42,8 @@ Func LauchTroop($troopKind, $nbSides, $waveNb, $maxWaveNb, $slotsPerEdge = 0)
 	If $maxWaveNb = 1 Then $waveName = "only"
 	If $waveNb = 0 Then $waveName = "last"
 	SetLog("Dropping " & $waveName & " wave of " & $troopNb & " " & $name, $COLOR_GREEN)
-
 	DropTroop($troop, $nbSides, $troopNb, $slotsPerEdge)
+
 	Return True
 EndFunc   ;==>LauchTroop
 
@@ -120,8 +120,8 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 							$pixelRandomDropcc[1] = $DeployCCPosition[1]
 							If $debugSetlog = 1 Then SetLog("Deploy CC $DeployHeroesPosition")
 						Else
-							$pixelRandomDrop[0] = $BottomRight[2][0]
-							$pixelRandomDrop[1] = $BottomRight[2][1] ;
+							$pixelRandomDropcc[0] = $BottomRight[2][0]
+							$pixelRandomDropcc[1] = $BottomRight[2][1] ;
 							If $debugSetlog = 1 Then SetLog("Deploy CC $BottomRight")
 						EndIf
 
@@ -141,8 +141,6 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 						If $numWave + 1 = 3 Then $waveName = "third"
 						If $numWave + 1 = 0 Then $waveName = "last"
 						SetLog("Dropping " & $waveName & " wave of " & $infoPixelDropTroop[5] & " " & $infoPixelDropTroop[4], $COLOR_GREEN)
-
-
 						DropOnPixel($infoPixelDropTroop[0], $infoPixelDropTroop[1], $infoPixelDropTroop[2], $infoPixelDropTroop[3])
 					EndIf
 					If ($isHeroesDropped) Then
@@ -188,13 +186,13 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 										$pixelRandomDropcc[1] = $DeployCCPosition[1]
 										If $debugSetlog = 1 Then SetLog("Deploy CC $DeployHeroesPosition")
 									Else
-										$pixelRandomDrop[0] = $BottomRight[2][0]
-										$pixelRandomDrop[1] = $BottomRight[2][1] ;
+										$pixelRandomDropcc[0] = $BottomRight[2][0]
+										$pixelRandomDropcc[1] = $BottomRight[2][1] ;
 										If $debugSetlog = 1 Then SetLog("Deploy CC $BottomRight")
 									EndIf
 
 									If ($isCCDropped = False And $infoTroopListArrPixel[0] = "CC") Then
-										dropCC($pixelRandomDrop[0], $pixelRandomDrop[1], $CC)
+										dropCC($pixelRandomDropcc[0], $pixelRandomDropcc[1], $CC)
 										$isCCDropped = True
 									ElseIf ($isHeroesDropped = False And $infoTroopListArrPixel[0] = "HEROES" And $i = $numberSidesDropTroop - 1) Then
 										dropHeroes($pixelRandomDrop[0], $pixelRandomDrop[1], $King, $Queen, $Warden)
@@ -234,7 +232,6 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 						SelectDropTroop($infoPixelDropTroop[0]) ;Select Troop
 						If _Sleep($iDelayLaunchTroop23) Then Return
 						SetLog("Dropping last " & $numberLeft & "  of " & $infoPixelDropTroop[5], $COLOR_GREEN)
-
 						DropOnPixel($infoPixelDropTroop[0], $infoPixelDropTroop[1], Ceiling($numberLeft / UBound($infoPixelDropTroop[1])), $infoPixelDropTroop[3])
 					EndIf
 				EndIf
@@ -256,10 +253,20 @@ Func LaunchTroop2($listInfoDeploy, $CC, $King, $Queen, $Warden)
 					dropHeroes($RandomEdge[$RandomXY][0], $RandomEdge[$RandomXY][1], $King, $Queen, $Warden)
 				EndIf
 			Else
-				If LauchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
-					If _Sleep(SetSleep(1)) Then Return
+				;no drop goblins in standard attack after milking attack
+				If $duringMilkingAttack = 0 Then
+					If LauchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
+						If _Sleep(SetSleep(1)) Then Return
+					EndIf
+				Else
+					If $listInfoDeploy[$i][0] <> $eGobl Then
+						If LauchTroop($listInfoDeploy[$i][0], $listInfoDeploy[$i][1], $listInfoDeploy[$i][2], $listInfoDeploy[$i][3], $listInfoDeploy[$i][4]) Then
+							If _Sleep(SetSleep(1)) Then Return
+						EndIf
+					EndIf
 				EndIf
 			EndIf
+
 		Next
 
 	EndIf

@@ -13,13 +13,13 @@
 ; Example .......: No
 ; ===============================================================================================================================
 Func SetSleep($type)
-    If IsKeepClicksActive() = True Then Return 0 ; fast bulk deploy
-    Local $factor0 = 10
+	If IsKeepClicksActive() = True Then Return 0 ; fast bulk deploy
+	Local $factor0 = 10
 	Local $factor1 = 100
 	If $AndroidAdbClick = True Then
 	   ; adjust for slow ADB clicks the delay factor
-	   $factor0 = 1
-	   $factor1 = 10
+	   $factor0 = 10
+	   $factor1 = 100
     EndIf
 	Switch $type
 		Case 0
@@ -52,10 +52,10 @@ EndFunc   ;==>SetSleep
 ; Example .......: No
 ; ===============================================================================================================================
 Func _SleepAttack($iDelay, $iSleep = True)
-   If $RunState = False Then
-	  ResumeAndroid()
-	  Return True
-   EndIf
-   If IsKeepClicksActive() = True Then Return False
-   Return _Sleep($iDelay, $iSleep)
-EndFunc
+	If $RunState = False Then
+		ResumeAndroid()
+		Return True
+	EndIf
+	If IsKeepClicksActive() = True Then Return False
+	Return _Sleep($iDelay, $iSleep)
+EndFunc   ;==>_SleepAttack

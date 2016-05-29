@@ -25,8 +25,12 @@
 ; Link ..........: https://github.com/MyBotRun/MyBot/wiki
 ; Example .......: No
 ; ===============================================================================================================================
-Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $qtaMin, $qtaMax, $troopName, $delayPointmin, $delayPointmax, $delayDropMin, $delayDropMax, $sleepafterMin, $sleepAfterMax, $debug = False)
-	debugAttackCSV("drop using vectors " & $vectors & " index " & $indexStart & "-" & $indexEnd & " and using " & $qtaMin & "-" & $qtaMax & " of " & $troopName)
+Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $indexArray, $qtaMin, $qtaMax, $troopName, $delayPointmin, $delayPointmax, $delayDropMin, $delayDropMax, $sleepafterMin, $sleepAfterMax, $debug = False)
+	If IsArray($indexArray) = 0 Then
+		debugAttackCSV("drop using vectors " & $vectors & " index " & $indexStart & "-" & $indexEnd & " and using " & $qtaMin & "-" & $qtaMax & " of " & $troopName)
+	Else
+		debugAttackCSV("drop using vectors " & $vectors & " index " & _ArrayToString($indexArray, ",") & " and using " & $qtaMin & "-" & $qtaMax & " of " & $troopName)
+	EndIf
 	debugAttackCSV(" - delay for multiple troops in same point: " & $delayPointmin & "-" & $delayPointmax)
 	debugAttackCSV(" - delay when  change deploy point : " & $delayDropMin & "-" & $delayDropMax)
 	debugAttackCSV(" - delay after drop all troops : " & $sleepafterMin & "-" & $sleepAfterMax)
@@ -101,17 +105,37 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $qtaMin, $qtaMax, $troop
 
 	Else
 
-		Local $SuspendMode = SuspendAndroid()
+		;Local $SuspendMode = SuspendAndroid()
 
 		SelectDropTroop($troopPosition) ; select the troop...
 		;drop
-		KeepClicks()
 		For $i = $indexStart To $indexEnd
+			Local $delayDrop = 0
+			Local $index = $i
+			Local $indexMax = $indexEnd
+			If IsArray($indexArray) = 1 Then
+				; adjust $index and $indexMax based on array
+				$index = $indexArray[$i]
+				$indexMax = $indexArray[$indexEnd]
+			EndIf
+			If $index <> $indexMax Then
+				;delay time between 2 drops in different point
+				If $delayDropMin <> $delayDropMax Then
+					$delayDrop = Random($delayDropMin, $delayDropMax, 1)
+				Else
+					$delayDrop = $delayDropMin
+				EndIf
+				debugAttackCSV(">> delay change drop point: " & $delayDrop)
+			EndIf
+
 			For $j = 1 To $numbersOfVectors
-				If $i <= UBound(Execute("$" & Eval("vector" & $j))) Then
-					$pixel = Execute("$" & Eval("vector" & $j) & "[" & $i - 1 & "]")
+				;delay time between 2 drops in different point
+				Local $delayDropLast = 0
+				If $j = $numbersOfVectors Then $delayDropLast = $delayDrop
+				If $index <= UBound(Execute("$" & Eval("vector" & $j))) Then
+					$pixel = Execute("$" & Eval("vector" & $j) & "[" & $index - 1 & "]")
 					Local $qty2 = $qtyxpoint
-					If $i < $indexStart + $extraunit Then $qty2 += 1
+					If $index < $indexStart + $extraunit Then $qty2 += 1
 
 					;delay time between 2 drops in same point
 					If $delayPointmin <> $delayPointmax Then
@@ -123,9 +147,9 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $qtaMin, $qtaMax, $troop
 					Switch Eval("e" & $troopName)
 						Case $eBarb To $eLava ; drop normal troops
 							If $debug = True Then
-								Setlog("Click( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
+								Setlog("AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else
-								Click($pixel[0], $pixel[1], $qty2, $delayPoint, "#0666")
+								AttackClick($pixel[0], $pixel[1], $qty2, $delayPoint, $delayDropLast, "#0666")
 							EndIf
 						Case $eKing
 							If $debug = True Then
@@ -137,13 +161,13 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $qtaMin, $qtaMax, $troop
 							If $debug = True Then
 								Setlog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ",-1," & $Queen & ", -1) ")
 							Else
-								dropHeroes($pixel[0], $pixel[1],  -1, $Queen , -1)
+								dropHeroes($pixel[0], $pixel[1], -1, $Queen, -1)
 							EndIf
 						Case $eWarden
 							If $debug = True Then
 								Setlog("dropHeroes(" & $pixel[0] & ", " & $pixel[1] & ", -1, -1," & $Warden & ") ")
 							Else
-								dropHeroes($pixel[0], $pixel[1], -1, -1,$Warden)
+								dropHeroes($pixel[0], $pixel[1], -1, -1, $Warden)
 							EndIf
 						Case $eCastle
 							If $debug = True Then
@@ -153,9 +177,9 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $qtaMin, $qtaMax, $troop
 							EndIf
 						Case $eLSpell To $eHaSpell
 							If $debug = True Then
-								Setlog("Drop Spell Click( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
+								Setlog("Drop Spell AttackClick( " & $pixel[0] & ", " & $pixel[1] & " , " & $qty2 & ", " & $delayPoint & ",#0666)")
 							Else
-								Click($pixel[0], $pixel[1], $qty2, $delayPoint, "#0667")
+								AttackClick($pixel[0], $pixel[1], $qty2, $delayPoint, $delayDropLast, "#0667")
 							EndIf
 						Case Else
 							Setlog("Error parsing line")
@@ -164,37 +188,31 @@ Func DropTroopFromINI($vectors, $indexStart, $indexEnd, $qtaMin, $qtaMax, $troop
 				EndIf
 				;;;;if $j <> $numbersOfVectors Then _sleep(5) ;little delay by passing from a vector to another vector
 			Next
-			If $i <> $indexEnd Then
-				;delay time between 2 drops in different point
-				If $delayDropMin <> $delayDropMax Then
-					Local $delayDrop = Random($delayDropMin, $delayDropMax, 1)
-				Else
-					Local $delayDrop = $delayDropMin
-				EndIf
-				debugAttackCSV(">> delay change drop point: " & $delayDrop)
-				If $delayDrop <> 0 Then
-				    SuspendAndroid($SuspendMode)
-					ReleaseClicks()
-					If _Sleep($delayDrop) Then
-					   Return
-				    EndIf
-					KeepClicks()
-				EndIf
-			EndIf
 		Next
 
-	    ReleaseClicks()
-	    SuspendAndroid($SuspendMode)
+		ReleaseClicks()
+	    ;SuspendAndroid($SuspendMode)
 
 		;sleep time after deploy all troops
+		Local $sleepafter = 0
 		If $sleepafterMin <> $sleepAfterMax Then
-			Local $sleepafter = Random($sleepafterMin, $sleepAfterMax, 1)
+			$sleepafter = Random($sleepafterMin, $sleepAfterMax, 1)
 		Else
-			Local $sleepafter = $sleepafterMin
+			$sleepafter = Int($sleepafterMin)
 		EndIf
-		debugAttackCSV(">> delay after drop all troops: " & $sleepafter)
-		If $sleepafter <> 0 Then
-			If _Sleep($sleepafter) Then Return
+		If $sleepafter > 0 And IsKeepClicksActive() = False Then
+			debugAttackCSV(">> delay after drop all troops: " & $sleepafter)
+			If $sleepafter <= 1000 Then  ; check SLEEPAFTER value is less than 1 second?
+				If _Sleep($sleepafter) Then Return
+				CheckHeroesHealth()  ; check hero health == does nothing if hero not dropped
+			Else  ; $sleepafter is More than 1 second, then improve pause/stop button response with max 1 second delays
+				For $z = 1 To Int($sleepafter/1000) ; Check hero health every second while while sleeping
+					If _Sleep(980) Then Return  ; sleep 1 second minus estimated herohealthcheck time when heroes not activiated
+					CheckHeroesHealth()  ; check hero health == does nothing if hero not dropped
+				Next
+				If _Sleep(Mod($sleepafter,1000)) Then Return  ; $sleepafter must be integer for MOD function return correct value!
+				CheckHeroesHealth() ; check hero health == does nothing if hero not dropped
+			EndIf
 		EndIf
 	EndIf
 

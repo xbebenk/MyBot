@@ -14,12 +14,10 @@
 ; ===============================================================================================================================
 
 Func MilkingDetectRedArea()
-   	$MilkFarmObjectivesSTR = ""
-	LoadAmountOfResourcesImages()
+	$MilkFarmObjectivesSTR = ""
 	;01 - REDAREA -----------------------------------------------------------------------------------------------------------------------------------------
 	Local $hTimer = TimerInit()
-	_WinAPI_DeleteObject($hBitmapFirst)
-	$hBitmapFirst = _CaptureRegion2()
+	_CaptureRegion2()
 	_GetRedArea()
 	Local $htimerREDAREA = Round(TimerDiff($hTimer) / 1000, 2)
 	If $debugsetlog = 1 Then SetLog("> RedArea completed in " & $htimerREDAREA & " seconds", $color_blue)
@@ -29,4 +27,4 @@ Func MilkingDetectRedArea()
 	CleanRedArea($PixelTopRight)
 	CleanRedArea($PixelBottomLeft)
 	CleanRedArea($PixelBottomRight)
-EndFunc
+EndFunc   ;==>MilkingDetectRedArea
