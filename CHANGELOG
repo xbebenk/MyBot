@@ -1,4 +1,10 @@
-﻿* **V6.0**
+﻿* **V6.1**
+ * Fixed deadbase collectors default value first start
+ * Improved rage spell train window
+ * Fixed queen detection train window
+ * Fixed language translation available (at this moment only german translate it is avaiable)
+
+* **V6.0**
  * New GUI interface, more user friendly
  * Updated elixir troop training barracks positions for May 2016 update
  * Updated donation for May 2016 update
