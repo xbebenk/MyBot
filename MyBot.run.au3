@@ -46,7 +46,7 @@ EndIf
 #include "COCBot\MBR Global Variables.au3"
 #include "COCBot\functions\Config\ScreenCoordinates.au3"
 
-$sBotVersion = "v6.0.0.76" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
+$sBotVersion = "v6.1" ;~ Don't add more here, but below. Version can't be longer than vX.y.z because it it also use on Checkversion()
 $sBotTitle = "My Bot " & $sBotVersion & " " ;~ Don't use any non file name supported characters like \ / : * ? " < > |
 
 Opt("WinTitleMatchMode", 3) ; Window Title exact match mode
@@ -470,7 +470,8 @@ Func AttackMain() ;Main control for attack functions
 				If _Sleep($iDelayAttackMain2) Then Return
 			Return True
 		Else
-			Setlog("No one of search condition match, attack skipped ...", $COLOR_BLUE)
+			Setlog("No one of search condition match: (wait troops and/or heroes according to search settings)", $COLOR_BLUE)
+			Setlog(" - wait troops and/or heroes according to search settings", $COLOR_BLUE)
 		EndIf
 	Else
 		SetLog("Attacking Not Planned, Skipped..", $COLOR_RED)

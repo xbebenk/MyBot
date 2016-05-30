@@ -36,6 +36,8 @@
  * Add attack scheduler (hours of day AND days of week)
  * Add seperate option to remove gem box
  * Updated OCR spell detection in train window
+ * Fix Queen hero recognition
+ * Improved rage spell detection train window
 
 * **V5.3.3** (Never released)
  * Fix ADB Path problem killing all processes when empty String
