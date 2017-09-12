@@ -1,0 +1,86 @@
+NOTE  |Original script by : Prinz Eugen (7-7-2017)
+NOTE  |edited xbebenk (2017-07-20)
+NOTE  |TROOPS:
+NOTE  |TH10:2Lava,26Ball,2Baby,10Minion
+NOTE  |TH11:2Lava,26Ball,4Baby
+NOTE  |SPELLS:
+NOTE  |5Haste,3Rage
+NOTE  |CC:7Ball+1Haste (or 1Rage)
+NOTE  |
+NOTE  |<=== BE SURE TO CHECK ALL
+NOTE  |<=== HERO, CC, AND SPELL
+NOTE  |
+NOTE  |Use External Edge for REDLINE
+
+      |-----------------------------------------------------------------------------------------------|
+      |                                                                                               |
+      |                                                                                               |
+	  
+      |EXTR. GOLD |EXTR.ELIXIR|EXTR. DARK |DEPO. GOLD |DEPO.ELIXIR|DEPO. DARK |TOWNHALL   |FORCED SIDE|
+SIDE  |0          |0          |0          |0          |0          |0          |10         |           |
+
+      |VECTOR_____|SIDE_______|DROP_POINTS|ADDTILES___|VERSUS_____|RANDOMX_PX_|RANDOMY_PX_|___________|
+MAKE  |A          |FRONT-LEFT |8          |1          |INT-EXT    |0          |1          |           | Lava, King, Queen, Wall, Castle
+MAKE  |B          |FRONT-RIGHT|8          |1          |INT-EXT    |0          |1          |           | Lava
+
+MAKE  |F          |FRONT-LEFT |10         |-8         |INT-EXT    |0          |0          |           | Haste; 1st Drop
+MAKE  |G          |FRONT-RIGHT|10         |-8         |INT-EXT    |0          |0          |           | Haste; 1st Drop
+
+MAKE  |S          |FRONT-RIGHT|10         |-16        |INT-EXT    |0          |0          |           | Rage ; 2nd Drop
+MAKE  |R          |FRONT-LEFT |10         |-16        |INT-EXT    |0          |0          |           | Rage ; 2nd Drop
+
+MAKE  |H          |FRONT-RIGHT|10         |-22        |INT-EXT    |0          |0          |           | Haste ; 3rd Drop
+MAKE  |I          |FRONT-LEFT |10         |-22        |INT-EXT    |0          |0          |           | Haste ; 3rd Drop
+
+MAKE  |Q          |FRONT-LEFT |8          |-1         |INT-EXT    |0          |0          |           | Balloons
+MAKE  |O          |FRONT-RIGHT|8          |-1         |INT-EXT    |0          |0          |           | Balloons
+MAKE  |N          |FRONT-LEFT |8          |-1         |EXT-INT    |0          |0          |           | Balloons
+MAKE  |P          |FRONT-RIGHT|8          |-1         |EXT-INT    |0          |0          |           | Balloons
+
+MAKE  |V          |LEFT-FRONT |10         |1          |EXT-INT    |0          |0          |           | Baby Dragon
+MAKE  |U          |RIGHT-FRONT|10         |1          |EXT-INT    |0          |0          |           | Baby Dragon
+
+MAKE  |C          |FRONT-LEFT |5          |-1         |EXT-INT    |0          |0          |           | Minions
+MAKE  |D          |FRONT-RIGHT|5          |-1         |EXT-INT    |0          |0          |           | Minions	
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________| Troops
+;DROP  |A          |1          |1          |castle     |20-30      |10-20      |4000-5000  |           |
+
+DROP  |Q-O        |1-6        |7          |Ball       |30-50      |50-80      |10-20      |           |
+DROP  |N-P		  |3-8		  |6		  |Ball		  |30-50	  |50-80	  |50   	  |			  |
+DROP  |A-B        |4          |1          |Lava       |30-50      |30-70      |90         |           | 	
+DROP  |A          |1          |1          |castle     |20-30      |10-20      |           |           |
+DROP  |A          |1          |1          |warden     |20-30      |10-20      |100        |           |
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________| Spells
+DROP  |F-G        |2          |1          |HaSpell    |0          |0          |150        |           | Penetration
+DROP  |F-G        |5          |1          |HaSpell    |0          |0          |1500       |           | Penetration
+
+DROP  |V-U        |5          |1          |BabyD      |50-60      |0          |200        |           | Side Cleaner
+
+DROP  |R          |1          |1          |RSpell     |500-700    |0          |100        |           | Citadel
+DROP  |S          |4          |1          |RSpell     |500-700    |0          |100        |           | Citadel
+DROP  |R          |5          |1          |RSpell     |500-700    |0          |3000-5000  |           | Citadel
+
+DROP  |A          |1          |1          |warden     |20-30      |10-20      |           |           |
+
+DROP  |B          |1          |1          |Wall       |50-60      |0          |2000-4000  |           | 
+DROP  |B          |1          |3          |Wall       |0          |0          |500        |           |
+DROP  |A          |1          |3          |Wall       |0          |0          |100        |           |
+DROP  |C-D        |1-5        |5          |Mini       |50-60      |0          |100        |           |
+DROP  |V-U        |2          |1          |BabyD      |50-60      |0          |           |           | bersih2
+
+DROP  |H          |3          |1          |HaSpell	  |500-700    |0          |100        |           | Last Stand
+RECALC|           |           |           |           |           |           |           |           | 
+DROP  |I          |3          |1          |HaSpell    |500-700    |0          |100        |           | Last Stand
+DROP  |I          |1          |1          |RSpell     |500-700    |0          |100        |           | Citadel
+
+WAIT  |2500-5000  |           |           |           |           |           |           |           |
+
+      |VECTOR_____|INDEX______|QTY_X_VECT_|TROOPNAME__|DELAY_DROP_|DELAYCHANGE|SLEEPAFTER_|___________| Remains
+DROP  |A          |1          |6          |Wall       |0          |0          |100        |           |
+DROP  |V-U        |5          |3          |Ball       |50-60      |0          |200        |           | Side Cleaner
+DROP  |C-D        |1-5        |5          |Mini       |50-60      |0          |100        |           |
+DROP  |A          |1          |1          |King       |30-50      |0          |100-200    |           |
+DROP  |A          |1          |1          |Queen      |30-50      |0          |100-200    |           |
+	
