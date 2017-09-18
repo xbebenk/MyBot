@@ -573,6 +573,10 @@ Global Const $g_iModeCount = 3
 Global $g_iMatchMode = 0 ; 0 Dead / 1 Live / 2 TH Snipe / 3 Milking Attack / 4 TH Bully / 5 Drop Trophy
 Global Const $g_asModeText[6] = ["Dead Base", "Live Base", "TH Snipe", "Milking Attack", "TH Bully", "Drop Trophy"]
 
+;xbenk
+Global $btnAttNowLB
+
+
 ; Troops
 Global Enum $eTroopBarbarian, $eTroopArcher, $eTroopGiant, $eTroopGoblin, $eTroopWallBreaker, $eTroopBalloon, _
 		$eTroopWizard, $eTroopHealer, $eTroopDragon, $eTroopPekka, $eTroopBabyDragon, $eTroopMiner, _

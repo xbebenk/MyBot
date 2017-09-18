@@ -39,11 +39,12 @@ Func CreateLogTab()
 
    WinActivate($activeHWnD) ; restore current active window
 
+   ;xbenk
    $y = 410
-   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Log", "LblLog_Style", "Log Style")&":", $x, $y + 5, -1, -1)
+   GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Log", "LblLog_Style", "Style")&":", $x, $y + 5, -1, -1)
 	  GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 
-   $g_hCmbLogDividerOption = GUICtrlCreateCombo("", $x + 50, $y, 180, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
+   $g_hCmbLogDividerOption = GUICtrlCreateCombo("", $x + 30, $y, 180, 25, BitOR($CBS_DROPDOWNLIST, $CBS_AUTOHSCROLL))
 	  GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 	  _GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Log", "LblLog_Style_Info_01", "Use these options to set the Log type."))
 	  GUICtrlSetData(-1, GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_01", "Use Divider to Resize Both Logs") & "|" & _
@@ -53,6 +54,10 @@ Func CreateLogTab()
 						 GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_05", "Full Bot Log, Hide Attack Log") & "|" & _
 						 GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_06", "Hide Bot Log, Full Attack Log") , GetTranslatedFileIni("MBR GUI Design Log", "CmbLogDividerOption_Item_01", -1))
 	  GUICtrlSetOnEvent(-1, "cmbLog")
+
+
+	$btnAttNowLB = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Log", "BtnAttack", "Attack"), $x+218, $y-1, 44, 23)
+				GUICtrlSetOnEvent(-1, "AttackNowLBxbenk")
 
    $g_hBtnAtkLogClear = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Log", "BtnAtkLogClear", "Clear Atk. Log"), $x + 270, $y - 1, 80, 23)
 	  GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)

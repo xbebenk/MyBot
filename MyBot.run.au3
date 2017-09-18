@@ -1,4 +1,8 @@
-﻿; #FUNCTION# ====================================================================================================================
+﻿#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_UseUpx=y
+#Au3Stripper_Parameters=/rsln /MI=3
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
+; #FUNCTION# ====================================================================================================================
 ; Name ..........: MBR Bot
 ; Description ...: This file contains the initialization and main loop sequences f0r the MBR Bot
 ; Author ........:  (2014)
