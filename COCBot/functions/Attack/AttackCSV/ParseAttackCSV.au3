@@ -357,20 +357,6 @@ Func ParseAttackCSV($debug = False)
 						WEnd
 						If $exitOneStar = 1 Or $exitTwoStars = 1 Or $exitNoResources = 1 Then ExitLoop ;stop parse CSV file, start exit battle procedure
 
-					Case "DRAG"
-						ReleaseClicks()
-						Local $dragdistance, $dragdirection, $dragdelay
-						$dragdistance = Int($value1)
-						$dragdirection = $value2
-						$dragdelay = Int($value3)
-						Setlog("drag attackbar: " & $dragdistance & " slot to " & $value2 )
-						If $value2 = "LEFT" Then
-							ClickDrag(250 + ($dragdistance * 73), 660, 250, 660, $dragdelay)
-						EndIf
-						If $value2 = "RIGHT" Then
-							ClickDrag(500 - ($dragdistance * 73), 660, 500, 660, $dragdelay)
-						EndIf
-
 					Case "RECALC"
 						ReleaseClicks()
 						PrepareAttack($g_iMatchMode, True)

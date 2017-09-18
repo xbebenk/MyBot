@@ -26,22 +26,6 @@ Func TestImglocTroopBar()
 	$g_bRunState = False
 EndFunc   ;==>TestImglocTroopBar
 
-Func TestImglocTroopBar1()
-	$g_bRunState = True
-	$g_iDebugSetlog = 1
-	$g_iDebugOcr = 1
-	$g_iDebugImageSave = 1
-	local $dragdistance = Int(GUICtrlRead($g_hTxtTestFindButton))
-	Setlog("=========== Imgloc ============")
-	ClickDrag(250 + (5 * 73), 660, 250, 660, 200)
-	ClickDrag(500 - $dragdistance, 660, 500, 660, 200)
-	PrepareAttack($DB, True)
-	$g_iDebugSetlog = 0
-	$g_iDebugOcr = 0
-	$g_iDebugImageSave = 0
-	$g_bRunState = False
-EndFunc   ;==>TestImglocTroopBar1
-
 Func AttackBarCheck($Remaining = False)
 
 	Local $x = 0, $y = 659, $x1 = 853, $y1 = 698
@@ -146,11 +130,7 @@ Func AttackBarCheck($Remaining = False)
 				If $aResult[$i][1] > 0 Then
 					If $g_iDebugSetlog = 1 Then SetLog("SLOT : " & $i, $COLOR_DEBUG) ;Debug
 					If $g_iDebugSetlog = 1 Then SetLog("Detection : " & $aResult[$i][0] & "|x" & $aResult[$i][1] & "|y" & $aResult[$i][2], $COLOR_DEBUG) ;Debug
-					If Not $Remaining Then
-						$Slottemp = SlotAttack(Number($aResult[$i][1]), $CheckSlot12, $CheckSlotwHero)
-					Else
-						$Slottemp = SlotAttack(Number($aResult[$i][1]), False, True)
-					EndIf
+					$Slottemp = SlotAttack(Number($aResult[$i][1]), $CheckSlot12, $CheckSlotwHero)
 					If $g_bRunState = False Then Return ; Stop function
 					If _Sleep(20) Then Return ; Pause function
 					If UBound($Slottemp) = 2 Then

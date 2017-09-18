@@ -537,8 +537,6 @@ Func GUIControl_WM_COMMAND($hWind, $iMsg, $wParam, $lParam)
 			imglocTestQuickTrain(1)
 		Case $g_hBtnTestimglocTroopBar
 			TestImglocTroopBar()
-		Case $g_hBtnTestimglocTroopBar1
-			TestImglocTroopBar1()
 		Case $g_hBtnTestAttackCSV
 			btnTestAttackCSV()
 		Case $g_hBtnTestBuildingLocation
@@ -1996,23 +1994,3 @@ Func IsGUICtrlHidden($hGUICtrl)
 	If BitAnd(WinGetState(GUICtrlGetHandle($hGUICtrl), ""), 2) = 0 Then Return True
 	Return False
 EndFunc
-
-;xbenk
-Func AttackNowLB()
-	Setlog("Begin Live Base Attack TEST")
-	$g_iMatchMode = $LB			; Select Live Base As Attack Type
-	$g_aiAttackAlgorithm[$LB] = 1			; Select Scripted Attack
-	$g_sAttackScrScriptName[$LB] = GuiCtrlRead($g_hCmbScriptNameAB)		; Select Scripted Attack File From The Combo Box, Cos it wasn't refreshing until pressing Start button
-	$g_bRunState = True
-
-	ResetTHsearch()
-
-	ForceCaptureRegion()
-	_CaptureRegion2()
-
-	FindTownhall(True)
-
-	PrepareAttack($g_iMatchMode)			; lol I think it's not needed for Scripted attack, But i just Used this to be sure of my code
-	Attack()			; Fire xD
-	Setlog("End Live Base Attack TEST")
-EndFunc   ;==>AttackNowLB

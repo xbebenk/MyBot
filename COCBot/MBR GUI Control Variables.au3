@@ -248,7 +248,6 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hBtnTestDeadBaseFolder) = 1
 	$oAlwaysEnabledControls($g_hBtnTestTHimgloc) = 1
 	$oAlwaysEnabledControls($g_hBtnTestimglocTroopBar) = 1
-	$oAlwaysEnabledControls($g_hBtnTestimglocTroopBar1) = 1
 	$oAlwaysEnabledControls($g_hBtnTestQuickTrainsimgloc) = 1
 	$oAlwaysEnabledControls($g_hChkdebugAttackCSV) = 1
 	$oAlwaysEnabledControls($g_hChkMakeIMGCSV) = 1

@@ -44,7 +44,6 @@ Func FindTownHall($check = True, $forceCaptureRegion = True)
 			$g_iTHy = 0
 		EndIf
 		;EndIf
-		$eTHLevel = StringFormat("%2s", $g_iSearchTH)
 		Return " [TH]:" & StringFormat("%2s", $g_iSearchTH) & ", " & $g_sTHLoc
 	EndIf
 	$g_sTHLoc = $g_iSearchTH
