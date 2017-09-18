@@ -39,7 +39,7 @@ Func CreateLogTab()
 
    WinActivate($activeHWnD) ; restore current active window
 
-  $y = 410
+$y = 410
    GUICtrlCreateLabel(GetTranslatedFileIni("MBR GUI Design Log", "LblLog_Style", "Style")&":", $x, $y + 5, -1, -1)
 	  GUICtrlSetResizing(-1, $GUI_DOCKLEFT + $GUI_DOCKBOTTOM + $GUI_DOCKWIDTH + $GUI_DOCKHEIGHT)
 

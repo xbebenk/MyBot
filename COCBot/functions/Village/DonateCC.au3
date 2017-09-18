@@ -509,13 +509,6 @@ Func DonateCC($Check = False)
 
 	If _Sleep($DELAYDONATECC2) Then Return
 
-	If $ichkSmartTrain = 1 Then
-		OpenArmyWindow()
-		MakingDonatedTroops() 	; SmartTrain Demen
-		ClickP($aAway, 1, 0, "#0176")
-		If _Sleep($DELAYDONATECC2) Then Return
-	EndIf
-
 EndFunc   ;==>DonateCC
 
 Func CheckDonateTroop(Const $iTroopIndex, Const $sDonateTroopString, Const $sBlacklistTroopString, Const $sClanString)

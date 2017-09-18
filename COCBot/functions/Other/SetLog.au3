@@ -272,14 +272,22 @@ Func SetAtkLog($String1, $String2 = "", $Color = $COLOR_BLACK, $Font = "Lucida C
 
 EndFunc   ;==>SetAtkLog
 
+;Func AtkLogHead()
+;	SetAtkLog(_PadStringCenter(" " & GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_01", "ATTACK LOG") & " ", 71, "="), "", $COLOR_BLACK, "MS Shell Dlg", 8.5)
+;	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                  --------  LOOT --------       ----- BONUS ------'), "")
+;	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|TIME|TROP.|SEARCH|   GOLD| ELIXIR|DARK EL|TR.|S|  GOLD|ELIXIR|  DE|L.'), "")
+;EndFunc   ;==>AtkLogHead
 Func AtkLogHead()
-	Local $Text = ""							; SwitchAcc Demen
-	If $ichkSwitchAcc = 1 Then $Text = "Ac|"	; SwitchAcc Demen
 	SetAtkLog(_PadStringCenter(" " & GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_01", "ATTACK LOG") & " ", 71, "="), "", $COLOR_BLACK, "MS Shell Dlg", 8.5)
-	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                                      ---- LOOT ---- ---- BONUS ----'), "")
-	SetAtkLog($Text & GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", 'TIME |TROP|SRC|TH|TR|[%]|TR.|S|GOLD|ELIX|  DE|GOLD|ELIX|  DE|L.|Account'), "")
+	;------------------------------------------------------------------------------------------------------------------------------
+	;SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                  --------  LOOT --------       ----- BONUS ------'), "")
+	;SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|TIME|TROP.|SEARCH|   GOLD| ELIXIR|DARK EL|TR.|S|  GOLD|ELIXIR|  DE|L.'), "")
+
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_02", '|                   ---- LOOT ----          ---- BONUS ----'), "")
+	SetAtkLog(GetTranslatedFileIni("MBR Func_AtkLogHead", "AtkLogHead_Text_03", '|TIME|TROP|SRC|TH|TR|[%]|GOLD|ELIX|  DE|TR.|S|GOLD|ELIX|  DE|L.'), "")
 	;---------------------------------------------------------------
 EndFunc   ;==>AtkLogHead
+
 
 Func __FileWriteLog($handle, $text)
 	Return FileWriteLine($handle, $text)

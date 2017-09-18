@@ -15,7 +15,7 @@
 #include-once
 
 Global $g_hCmbProfile = 0, $g_hTxtVillageName = 0, $g_hBtnAddProfile = 0, $g_hBtnConfirmAddProfile = 0, $g_hBtnConfirmRenameProfile = 0, _
-	   $g_hBtnDeleteProfile = 0, $g_hBtnCancelProfileChange = 0, $g_hBtnRenameProfile = 0, $btnMakeSwitchADBFolder = 0, $btnPushshared_prefs = 0
+	   $g_hBtnDeleteProfile = 0, $g_hBtnCancelProfileChange = 0, $g_hBtnRenameProfile = 0
 
 ;$hGUI_Profiles = _GUICreate("", $g_iSizeWGrpTab2, $g_iSizeHGrpTab2, 5, 25, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hGUI_BOT)
 ;GUISwitch($hGUI_Profiles)
@@ -99,15 +99,5 @@ Func CreateBotProfiles()
 			_GUICtrlButton_SetImageList($g_hBtnRenameProfile, $bIconEdit, 4)
 			GUICtrlSetOnEvent(-1, "btnRenameConfirm")
 			_GUICtrlSetTip(-1, GetTranslatedFileIni("MBR GUI Design Child Bot - Profiles", "BtnRenameProfile_Info_01", "Rename Profile"))
-
-			; samm0d
-		$btnMakeSwitchADBFolder = GUICtrlCreateButton(GetTranslatedFileIni("sam m0d", 36, "Get shared_prefs"), $x + 230, $y, 100, 24)
-			GUICtrlSetOnEvent(-1, "btnMakeSwitchADBFolder")
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("sam m0d",37, "Copy Village save files from Emulator to current profile. Make village name image from profile."))
-
-		$btnPushshared_prefs = GUICtrlCreateButton(GetTranslatedFileIni("sam m0d", "Push", "Push"), $x + 340, $y, 50, 24)
-			GUICtrlSetOnEvent(-1, "btnPushshared_prefs")
-			_GUICtrlSetTip(-1, GetTranslatedFileIni("sam m0d","Push shared_prefs", "Push shared_prefs - Copy shared_prefs from profile to emulator."))
-
 	GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc

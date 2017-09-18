@@ -21,9 +21,9 @@ Global $g_hChkDebugClick = 0, $g_hChkDebugSetlog = 0, $g_hChkDebugOCR = 0, $g_hC
 Global $g_hChkdebugAttackCSV = 0, $g_hChkMakeIMGCSV = 0, $g_hChkDebugDisableZoomout = 0, $g_hChkDebugDisableVillageCentering = 0, $g_hChkDebugDeadbaseImage = 0
 
 Global $g_hBtnTestTrain = 0, $g_hBtnTestDonateCC = 0, $g_hBtnTestRequestCC = 0, $g_hBtnTestSendText = 0, $g_hBtnTestAttackBar = 0, $g_hBtnTestClickDrag = 0, $g_hBtnTestImage = 0
-Global $g_hBtnTestVillageSize = 0, $g_hBtnTestDeadBase = 0, $g_hBtnTestTHimgloc = 0, $g_hBtnTestTrainsimgloc = 0, $g_hBtnTestQuickTrainsimgloc = 0, $g_hTxtTestFindButton = 0, $g_hTxtTestFindButton1 = 0
-Global $g_hBtnTestFindButton = 0, $g_hBtnTestDeadBaseFolder = 0, $g_hBtnTestCleanYard = 0, $g_hBtnTestAttackCSV = 0, $g_hBtnTestimglocTroopBar = 0, $g_hBtnTestimglocTroopBar1 = 0, $g_hBtnTestimglocTroopBar2 = 0, $g_hBtnTestBuildingLocation = 0
-Global $g_hBtnTestConfigSave = 0, $g_hBtnTestConfigApply = 0, $g_hBtnTestConfigRead = 0, $g_hBtnTestOcrMemory = 0
+Global $g_hBtnTestVillageSize = 0, $g_hBtnTestDeadBase = 0, $g_hBtnTestTHimgloc = 0, $g_hBtnTestTrainsimgloc = 0, $g_hBtnTestQuickTrainsimgloc = 0, $g_hTxtTestFindButton = 0
+Global $g_hBtnTestFindButton = 0, $g_hBtnTestDeadBaseFolder = 0, $g_hBtnTestCleanYard = 0, $g_hBtnTestAttackCSV = 0, $g_hBtnTestimglocTroopBar = 0,$g_hBtnTestimglocTroopBar1 = 0, $g_hBtnTestBuildingLocation = 0
+Global $g_hBtnTestConfigSave = 0, $g_hBtnTestConfigApply = 0, $g_hBtnTestConfigRead = 0, $g_hBtnTestOcrMemory = 0, $g_hBtnTestWeakBase = 0
 
 Func CreateBotDebug()
    Local $x = 25, $y = 45
@@ -133,8 +133,7 @@ Func CreateBotDebug()
 	  ; now go up again
 	  $x -= 145
 
-	  $g_hTxtTestFindButton = GUICtrlCreateInput("40", $x - 90, $y + 3, 40, 20)
-	  $g_hTxtTestFindButton1 = GUICtrlCreateInput("10", $x - 45, $y + 3, 40, 20)
+	  $g_hTxtTestFindButton = GUICtrlCreateInput("40", $x - 90, $y + 3, 85, 20)
 	  $g_hBtnTestFindButton = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "TestFindButton", "Test Find Button"), $x, $y, 140, 25)
 	  $y -= $yNext
 
@@ -146,9 +145,8 @@ Func CreateBotDebug()
 	  $g_hBtnTestBuildingLocation = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "BtnTestBuildingLocation", "Find Building"), $x - 145, $y, 140, 25)
 	  $y -= $yNext
 
-	  $g_hBtnTestimglocTroopBar = GUICtrlCreateButton("ATKBAR1", $x-25, $y, 60, 25)
-	  $g_hBtnTestimglocTroopBar1 = GUICtrlCreateButton("ATKBAR2", $x+38, $y, 60, 25)
-	  $g_hBtnTestimglocTroopBar2 = GUICtrlCreateButton("LEFT1", $x+99, $y, 40, 25)
+	  $g_hBtnTestimglocTroopBar = GUICtrlCreateButton("ATKBAR1", $x, $y, 60, 25)
+	  $g_hBtnTestimglocTroopBar1 = GUICtrlCreateButton("ATKBAR2", $x+62, $y, 60, 25)
 	  $y -= $yNext
 
 	  $g_hBtnTestConfigSave = GUICtrlCreateButton("Config Save", $x + 20, $y, 120, 25)
@@ -161,6 +159,8 @@ Func CreateBotDebug()
 	  $g_hBtnTestSendText = GUICtrlCreateButton("Send Text", $x + 20, $y, 120, 25)
 	  $y -= $yNext
 
+	  $g_hBtnTestWeakBase = GUICtrlCreateButton(GetTranslatedFileIni("MBR GUI Design Child Bot - Debug", "TestWeakBase", "Test Weak Base"), $x + 20, $y, 120, 25)
+	  $y -= $yNext
    GUICtrlCreateGroup("", -99, -99, 1, 1)
 EndFunc
 

@@ -200,7 +200,7 @@ Func SaveRegularConfig()
 	SaveConfig_600_35()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
 	; Quick train
-;~ 	SaveConfig_600_52_1()	; Included in SmartTrain - Demen
+	SaveConfig_600_52_1()
 	; troop/spell levels and counts
 	SaveConfig_600_52_2()
 	; <><><> Attack Plan / Train Army / Train Order <><><>
@@ -219,10 +219,6 @@ Func SaveRegularConfig()
 
 	; <><><><> Bot / Stats <><><><>
 	; <<< nothing here >>>
-
-	; Demen Mod
-	SaveConfig_SwitchAcc()
-	SaveConfig_SmartTrain()
 
 	;SetDebugLog("saveConfig: Wrote " & $g_iIniLineCount & " ini lines.")
 	_Ini_Save($g_sProfileConfigPath)
@@ -482,6 +478,7 @@ Func SaveConfig_600_18()
 	_Ini_Add("notify", "AlertPBMaintenance", $g_bNotifyAlertMaintenance ? 1 : 0)
 	_Ini_Add("notify", "AlertPBBAN", $g_bNotifyAlertBAN ? 1 : 0)
 	_Ini_Add("notify", "AlertPBUpdate", $g_bNotifyAlertBOTUpdate ? 1 : 0)
+	_Ini_Add("notify", "AlertSmartWaitTime", $g_bNotifyAlertSmartWaitTime ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_18
 
 Func SaveConfig_600_19()
@@ -993,14 +990,12 @@ Func SaveConfig_600_35()
 	_Ini_Add("other", "ChkFixClanCastle", $g_bForceClanCastleDetection ? 1 : 0)
 EndFunc   ;==>SaveConfig_600_35
 
-#CS	; Included in SmartTrain - Demen
 Func SaveConfig_600_52_1()
 	; <><><> Attack Plan / Train Army / Troops/Spells <><><>
 	ApplyConfig_600_52_1("Save")
 	_Ini_Add("other", "ChkUseQTrain", $g_bQuickTrainEnable ? 1 : 0)
 	_Ini_Add("troop", "QuickTrainArmyNum", $g_iQuickTrainArmyNum)
 EndFunc   ;==>SaveConfig_600_52_1
-#CE
 
 Func SaveConfig_600_52_2()
 	; troop/spell levels and counts

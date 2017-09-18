@@ -23,7 +23,6 @@ Global $g_hGUI_BOT = 0
 #include "MBR GUI Design Child Bot - Stats.au3"
 
 Global $g_hGUI_BOT_TAB = 0, $g_hGUI_BOT_TAB_ITEM1 = 0, $g_hGUI_BOT_TAB_ITEM2 = 0, $g_hGUI_BOT_TAB_ITEM3 = 0, $g_hGUI_BOT_TAB_ITEM4 = 0, $g_hGUI_BOT_TAB_ITEM5 = 0
-Global $g_hGUI_BOT_TAB_ITEM6 = 0	; ProfileStats For SwitchAcc - Demen
 
 Func CreateBotTab()
    $g_hGUI_BOT = _GUICreate("", $g_iSizeWGrpTab1, $g_iSizeHGrpTab1, $_GUI_CHILD_LEFT, $_GUI_CHILD_TOP, BitOR($WS_CHILD, $WS_TABSTOP), -1, $g_hFrmBotEx)
@@ -40,16 +39,11 @@ Func CreateBotTab()
    $g_hGUI_BOT_TAB_ITEM3 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_04_STab_03", "Debug"))
    CreateBotDebug()
    $g_hGUI_BOT_TAB_ITEM4 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_04_STab_04", "Profiles"))
-   CreateBotProfiles()		; Demen
-   CreateBotSwitchAcc()
+   CreateBotProfiles()
    $g_hGUI_BOT_TAB_ITEM5 = GUICtrlCreateTabItem(GetTranslatedFileIni("MBR Main GUI", "Tab_04_STab_05", "Stats"))
-   $g_hGUI_BOT_TAB_ITEM6 = GUICtrlCreateTabItem("Profile Stats")	; ProfileStats - SwitchAcc - Demen
-   ; This dummy is used in btnStart and btnStop to disable/enable all labels, text, buttons etc. on all tabs.
+	; This dummy is used in btnStart and btnStop to disable/enable all labels, text, buttons etc. on all tabs.
    $g_hLastControlToHide = GUICtrlCreateDummy()
    ReDim $g_aiControlPrevState[$g_hLastControlToHide + 1]
-
-   CreateProfileStats()		; ProfileStats - SwitchAcc - Demen
-
    CreateBotStats()
    GUICtrlCreateTabItem("")
 EndFunc

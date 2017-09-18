@@ -248,6 +248,7 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hBtnTestDeadBaseFolder) = 1
 	$oAlwaysEnabledControls($g_hBtnTestTHimgloc) = 1
 	$oAlwaysEnabledControls($g_hBtnTestimglocTroopBar) = 1
+	$oAlwaysEnabledControls($g_hBtnTestimglocTroopBar1) = 1
 	$oAlwaysEnabledControls($g_hBtnTestQuickTrainsimgloc) = 1
 	$oAlwaysEnabledControls($g_hChkdebugAttackCSV) = 1
 	$oAlwaysEnabledControls($g_hChkMakeIMGCSV) = 1
@@ -255,7 +256,6 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hBtnTestBuildingLocation) = 1
 	$oAlwaysEnabledControls($g_hBtnTestFindButton) = 1
 	$oAlwaysEnabledControls($g_hTxtTestFindButton) = 1
-	$oAlwaysEnabledControls($g_hTxtTestFindButton1) = 1
 	$oAlwaysEnabledControls($g_hBtnTestCleanYard) = 1
 	$oAlwaysEnabledControls($g_hLblSmartLightningUsed) = 1
 	$oAlwaysEnabledControls($g_hLblSmartZap) = 1
@@ -263,9 +263,7 @@ Func InitializeControlVariables()
 	$oAlwaysEnabledControls($g_hBtnTestConfigSave) = 1
 	$oAlwaysEnabledControls($g_hBtnTestConfigRead) = 1
 	$oAlwaysEnabledControls($g_hBtnTestConfigApply) = 1
-
-	$oAlwaysEnabledControls($btnMakeSwitchADBFolder) = 1
-	$oAlwaysEnabledControls($btnPushshared_prefs) = 1
+	$oAlwaysEnabledControls($g_hBtnTestWeakBase) = 1
 
 	$oAlwaysEnabledControls($g_hBtnMakeScreenshot) = 1
 	$oAlwaysEnabledControls($g_hDivider) = 1

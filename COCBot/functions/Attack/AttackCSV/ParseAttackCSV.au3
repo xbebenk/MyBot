@@ -272,32 +272,7 @@ Func ParseAttackCSV($debug = False)
 							Setlog("Discard row, " & $sErrorText & ": row " & $iLine + 1)
 							debugAttackCSV("Discard row, " & $sErrorText & ": row " & $iLine + 1)
 						Else
-							; REMAIN CMD from @chalicucu (added by Demen)
-							If $value4 = "REMAIN" Then
-								SetLog("Drop|Remain:  Dropping left over troops", $COLOR_BLUE)
-								; Let's get the troops again and quantities
-								If PrepareAttack($g_iMatchMode, True) > 0 Then
-									; a Loop from all troops
-									For $ii = $eBarb To $eBowl ; lauch all remaining troops
-										; Loop on all detected troops
-										For $x = 0 To UBound($g_avAttackTroops) - 1
-											; If the Name exist and haves more than zero is deploy it
-											If $g_avAttackTroops[$x][0] = $ii and $g_avAttackTroops[$x][1] > 0 Then
-												Local $plural = 0
-												If $g_avAttackTroops[$x][1] > 1 Then $plural = 1
-												Local $name = NameOfTroop($g_avAttackTroops[$x][0], $plural)
-												Setlog("Name: " & $name, $COLOR_DEBUG)
-												Setlog("Qty: " & $g_avAttackTroops[$x][1], $COLOR_DEBUG)
-												DropTroopFromINI($value1, $index1, $index2, $indexArray, $g_avAttackTroops[$x][1], $g_avAttackTroops[$x][1], $g_asTroopShortNames[$ii], $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
-												CheckHeroesHealth()
-												If _Sleep($DELAYALGORITHM_ALLTROOPS5) Then Return
-											EndIf
-										Next
-									Next
-								EndIf
-							Else
-								DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
-							EndIf
+							DropTroopFromINI($value1, $index1, $index2, $indexArray, $qty1, $qty2, $value4, $delaypoints1, $delaypoints2, $delaydrop1, $delaydrop2, $sleepdrop1, $sleepdrop2, $debug)
 						EndIf
 						ReleaseClicks($g_iAndroidAdbClicksTroopDeploySize)
 						If _Sleep($DELAYRESPOND) Then Return ; check for pause/stop
@@ -384,24 +359,16 @@ Func ParseAttackCSV($debug = False)
 
 					Case "DRAG"
 						ReleaseClicks()
-						Local $dragdistance, $dragdistance1, $dragdirection, $dragdelay
-						$dragdistance = Int(GUICtrlRead($g_hTxtTestFindButton))
-						$dragdistance1 = Int(GUICtrlRead($g_hTxtTestFindButton1))
-						$dragdirection = $value1
-						$dragdelay = Int($value2)
-						Setlog("drag attackbar to " & $value1 )
-						If $value1 = "LEFT" Then
-							ClickDrag(250 + (5 * 73), 660, 250, 660, $dragdelay)
-							ClickDrag(500 - $dragdistance, 660, 500, 660, $dragdelay)
+						Local $dragdistance, $dragdirection, $dragdelay
+						$dragdistance = Int($value1)
+						$dragdirection = $value2
+						$dragdelay = Int($value3)
+						Setlog("drag attackbar: " & $dragdistance & " slot to " & $value2 )
+						If $value2 = "LEFT" Then
+							ClickDrag(250 + ($dragdistance * 73), 660, 250, 660, $dragdelay)
 						EndIf
-						If $value1 = "RIGHT" Then
-							ClickDrag(100, 660, 500, 660, $dragdelay)
-							ClickDrag(255, 660, 250, 660, $dragdelay)
-						EndIf
-						If $value1 = "LEFT1" Then
-							ClickDrag(250 + (5 * 73), 660, 250, 660, $dragdelay)
-							ClickDrag(500 - ($dragdistance - $dragdistance1), 660, 500, 660, $dragdelay)
-							Setlog("drag attackbar to " & $value1 & " : " & ($dragdistance + $dragdistance1))
+						If $value2 = "RIGHT" Then
+							ClickDrag(500 - ($dragdistance * 73), 660, 500, 660, $dragdelay)
 						EndIf
 
 					Case "RECALC"
