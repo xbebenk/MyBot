@@ -15,6 +15,7 @@
 #include-once
 
 #include "functions\Other\GUICtrlGetBkColor.au3" ; Included here to use on GUI Control
+#include <WinAPISys.au3>
 
 Global $g_bRedrawBotWindow[3] = [True, False, False] ; [0] = window redraw enabled, [1] = window redraw required, [2] = window redraw requird by some controls, see CheckRedrawControls()
 Global $g_hFrmBot_WNDPROC = 0
@@ -2014,3 +2015,33 @@ Func AttackNowLBxbenk()
 	Attack()			; Fire xD
 	Setlog("End Live Base Attack TEST")
 EndFunc   ;==>AttackNowLB
+
+Func _BatteryStatus()
+    Local $aData = _WinAPI_GetSystemPowerStatus()
+    If @error Then Return
+
+    If BitAND($aData[1], 128) Then
+        $aData[0] = '!!'
+    Else
+        Switch $aData[0]; ac or battery
+            Case 0
+                $aData[0] = 'BATT'
+            Case 1
+                $aData[0] = 'AC'
+            Case Else
+                $aData[0] = '--'
+        EndSwitch
+    EndIf
+	SetLog("Battery/Charging: " & $aData[0])
+	SetLog("Battery status: " & $aData[2] & "%")
+    GUICtrlSetData($g_hLblBatteryAC, $aData[0])
+	GUICtrlSetData($g_hLblBatteryStatus, $aData[2] & "%")
+
+	If $aData[2] < $g_iStopOnBatt and $aData[0] = "BATT" Then
+		SetLog("Battery status : " & $aData[2] & "% and is below than " & $g_iStopOnBatt & "%",$COLOR_WARNING)
+		SetLog("Stopping bot",$COLOR_ACTION1)
+		PoliteCloseCoC()
+		CloseAndroid(_BatteryStatus)
+		BotStop()
+	EndIf
+EndFunc   ;==>_BatteryStatus

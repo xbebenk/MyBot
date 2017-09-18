@@ -170,6 +170,7 @@ Func _VillageSearch() ;Control for searching a village that meets conditions
 
 		;xbenk
 		$THString = FindTownhall(True, False)
+		_BatteryStatus()
 
 		For $i = 0 To $g_iModeCount - 2
 			If $isModeActive[$i] Then

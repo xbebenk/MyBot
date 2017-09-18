@@ -579,6 +579,7 @@ Global $eLootPerc = 0
 Global $starsearned = 0
 Global $eTHLevel = "-"
 Global $eWinlose = "-"
+Global $g_bStopOnBatt = 0, $g_iStopOnBatt = 10
 
 ; Troops
 Global Enum $eTroopBarbarian, $eTroopArcher, $eTroopGiant, $eTroopGoblin, $eTroopWallBreaker, $eTroopBalloon, _

@@ -169,6 +169,10 @@ Func chkAutoResume()
 	$g_bAutoResumeEnable = (GUICtrlRead($g_hChkAutoResume) = $GUI_CHECKED)
 EndFunc   ;==>chkAutoResume
 
+Func ChkStopOnBatt()
+	$g_bStopOnBatt = (GUICtrlRead($g_hChkStopOnBatt) = $GUI_CHECKED)
+EndFunc   ;==>ChkStopOnBatt
+
 Func txtGlobalActiveBotsAllowed()
 	Local $iValue = Int(GUICtrlRead($g_hTxtGlobalActiveBotsAllowed))
 	If $iValue < 1 Then

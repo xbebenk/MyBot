@@ -1,5 +1,10 @@
 ﻿#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
 #AutoIt3Wrapper_UseUpx=y
+#AutoIt3Wrapper_Run_AU3Check=n
+#Au3Stripper_Parameters=/rsln /MI=3
+#EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
+#Region ;**** Directives created by AutoIt3Wrapper_GUI ****
+#AutoIt3Wrapper_UseUpx=y
 #Au3Stripper_Parameters=/rsln /MI=3
 #EndRegion ;**** Directives created by AutoIt3Wrapper_GUI ****
 ; #FUNCTION# ====================================================================================================================
@@ -18,7 +23,7 @@
 #RequireAdmin
 #AutoIt3Wrapper_UseX64=7n
 ;#AutoIt3Wrapper_Res_HiDpi=Y ; HiDpi will be set during run-time!
-#AutoIt3Wrapper_Run_Au3Stripper=y
+#AutoIt3Wrapper_Run_Au3Stripper=n
 #Au3Stripper_Parameters=/rsln /MI=3
 ;/SV=0
 
@@ -524,7 +529,7 @@ Func FinalInitialization(Const $sAI)
 
 	; destroy splash screen here (so we witness the 100% ;)
 	DestroySplashScreen()
-
+	_BatteryStatus()
 	;AdlibRegister("PushBulletRemoteControl", $g_iPBRemoteControlInterval)
 	;AdlibRegister("PushBulletDeleteOldPushes", $g_iPBDeleteOldPushesInterval)
 
@@ -614,7 +619,7 @@ Func runBot() ;Bot that runs everything in order
 		If $b_iAutoRestartDelay > 0 And __TimerDiff($g_hBotLaunchTime) > $b_iAutoRestartDelay * 1000 Then
 			If RestartBot(False) = True Then Return
 		EndIf
-
+		_BatteryStatus()
 		PrepareDonateCC()
 		$g_bRestart = False
 		$g_bFullArmy = False
@@ -780,7 +785,7 @@ Func Idle() ;Sequence that runs until Full Army
 		Local $hTimer = __TimerInit()
 		Local $iReHere = 0
 		;PrepareDonateCC()
-
+		_BatteryStatus()
 		;If $g_bDonateSkipNearFullEnable = True Then getArmyCapacity(true,true)
 		If $g_iActiveDonate And $g_bChkDonate Then
 			Local $aHeroResult = CheckArmyCamp(True, True, True, False)
@@ -899,6 +904,7 @@ EndFunc   ;==>Idle
 
 Func AttackMain() ;Main control for attack functions
 	;LoadAmountOfResourcesImages() ; for debug
+	_BatteryStatus()
 	getArmyCapacity(True, True)
 	If IsSearchAttackEnabled() Then
 		If (IsSearchModeActive($DB) And checkCollectors(True, False)) Or IsSearchModeActive($LB) Or IsSearchModeActive($TS) Then
