@@ -125,6 +125,13 @@ Func GoldElixirChangeEBO()
 			SetLog("detected [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage & " |  Exit now ", $COLOR_INFO)
 		Else
 			SetLog("detected [G]: " & $Gold2 & " [E]: " & $Elixir2 & " [DE]: " & $DarkElixir2 & " [%]: " & $CurDamage & " |  Exit in " & StringReplace(StringFormat("%2i", $txtDiff), "-", "") & " sec.", $COLOR_INFO)
+			;xbenk
+			If ($CurDamage > 0 ) Then
+				$eLootPerc = $CurDamage
+				if($CurDamage = 4) Then
+					$eLootPerc = 74
+				EndIf
+			EndIf
 		EndIf
 
 		If Number($CurDamage) >= 92 Then

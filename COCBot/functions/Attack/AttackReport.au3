@@ -163,25 +163,44 @@ Func AttackReport()
 	EndIf
 
 	; check stars earned
-	Local $starsearned = 0
+	;Local $starsearned = 0
+	$starsearned = 0
 	If _ColorCheck(_GetPixelColor($aWonOneStarAtkRprt[0], $aWonOneStarAtkRprt[1], True), Hex($aWonOneStarAtkRprt[2], 6), $aWonOneStarAtkRprt[3]) Then $starsearned += 1
 	If _ColorCheck(_GetPixelColor($aWonTwoStarAtkRprt[0], $aWonTwoStarAtkRprt[1], True), Hex($aWonTwoStarAtkRprt[2], 6), $aWonTwoStarAtkRprt[3]) Then $starsearned += 1
 	If _ColorCheck(_GetPixelColor($aWonThreeStarAtkRprt[0], $aWonThreeStarAtkRprt[1], True), Hex($aWonThreeStarAtkRprt[2], 6), $aWonThreeStarAtkRprt[3]) Then $starsearned += 1
 	SetLog("Stars earned: " & $starsearned)
 
+	;xbenk
+	If $starsearned >= 1 Then
+		$eWinlose = "VICTORY"
+	Else
+		$eWinlose = "DEFEAT"
+	EndIf
+	SetLog("RESULT: " & $eWinlose)
+
+	;xbenk
 	Local $AtkLogTxt
 	$AtkLogTxt = "" & _NowTime(4) & "|"
-	$AtkLogTxt &= StringFormat("%5d", $g_aiCurrentLoot[$eLootTrophy]) & "|"
-	$AtkLogTxt &= StringFormat("%6d", $g_iSearchCount) & "|"
-	$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootGold]) & "|"
-	$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootElixir]) & "|"
-	$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootDarkElixir]) & "|"
+	$AtkLogTxt &= StringFormat("%4d", $g_aiCurrentLoot[$eLootTrophy]) & "|"
+	$AtkLogTxt &= StringFormat("%3d", $g_iSearchCount) & "|"
+	$AtkLogTxt &= StringFormat("%2d", $eTHLevel) & "|"
+	$AtkLogTxt &= StringFormat("%2d", $g_iSearchTrophy) & "|"
+	If ($eLootPerc = 100) Then
+		$AtkLogTxt &= StringFormat("%3d", $eLootPerc) & "|"
+	Else
+		$AtkLogTxt &= StringFormat("%2d", $eLootPerc) & "%|"
+	EndIf
 	$AtkLogTxt &= StringFormat("%3d", $g_iStatsLastAttack[$eLootTrophy]) & "|"
 	$AtkLogTxt &= StringFormat("%1d", $starsearned) & "|"
-	$AtkLogTxt &= StringFormat("%6d", $g_iStatsBonusLast[$eLootGold]) & "|"
-	$AtkLogTxt &= StringFormat("%6d", $g_iStatsBonusLast[$eLootElixir]) & "|"
+	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsLastAttack[$eLootGold]/1000)) & "K|"
+	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsLastAttack[$eLootElixir]/1000)) & "K|"
+	$AtkLogTxt &= StringFormat("%4d", $g_iStatsLastAttack[$eLootDarkElixir]) & "|"
+
+	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsBonusLast[$eLootGold]/1000)) & "K|"
+	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsBonusLast[$eLootElixir]/1000)) & "K|"
 	$AtkLogTxt &= StringFormat("%4d", $g_iStatsBonusLast[$eLootDarkElixir]) & "|"
 	$AtkLogTxt &= $g_asLeagueDetailsShort & "|"
+	;xbenk till here
 
 	Local $AtkLogTxtExtend
 	$AtkLogTxtExtend = "|"
