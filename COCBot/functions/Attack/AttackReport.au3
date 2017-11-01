@@ -23,7 +23,7 @@ Func AttackReport()
 	While _CheckPixel($aEndFightSceneAvl, True) = False ; check for light gold pixle in the Gold ribbon in End of Attack Scene before reading values
 		$iCount += 1
 		If _Sleep($DELAYATTACKREPORT1) Then Return
-		If $g_iDebugSetlog = 1 Then Setlog("Waiting Attack Report Ready, " & ($iCount / 2) & " Seconds.", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Waiting Attack Report Ready, " & ($iCount / 2) & " Seconds.", $COLOR_DEBUG)
 		If $iCount > 30 Then ExitLoop ; wait 30*500ms = 15 seconds max for the window to render
 	WEnd
 	If $iCount > 30 Then Setlog("End of Attack scene slow to appear, attack values my not be correct", $COLOR_INFO)
@@ -32,7 +32,7 @@ Func AttackReport()
 	While getResourcesLoot(333, 289 + $g_iMidOffsetY) = "" ; check for gold value to be non-zero before reading other values as a secondary timer to make sure all values are available
 		$iCount += 1
 		If _Sleep($DELAYATTACKREPORT1) Then Return
-		If $g_iDebugSetlog = 1 Then Setlog("Waiting Attack Report Ready, " & ($iCount / 2) & " Seconds.", $COLOR_DEBUG)
+		If $g_bDebugSetlog Then Setlog("Waiting Attack Report Ready, " & ($iCount / 2) & " Seconds.", $COLOR_DEBUG)
 		If $iCount > 20 Then ExitLoop ; wait 20*500ms = 10 seconds max before we have call the OCR read an error
 	WEnd
 	If $iCount > 20 Then Setlog("End of Attack scene read gold error, attack values my not be correct", $COLOR_INFO)
@@ -163,44 +163,25 @@ Func AttackReport()
 	EndIf
 
 	; check stars earned
-	;Local $starsearned = 0
-	$starsearned = 0
+	Local $starsearned = 0
 	If _ColorCheck(_GetPixelColor($aWonOneStarAtkRprt[0], $aWonOneStarAtkRprt[1], True), Hex($aWonOneStarAtkRprt[2], 6), $aWonOneStarAtkRprt[3]) Then $starsearned += 1
 	If _ColorCheck(_GetPixelColor($aWonTwoStarAtkRprt[0], $aWonTwoStarAtkRprt[1], True), Hex($aWonTwoStarAtkRprt[2], 6), $aWonTwoStarAtkRprt[3]) Then $starsearned += 1
 	If _ColorCheck(_GetPixelColor($aWonThreeStarAtkRprt[0], $aWonThreeStarAtkRprt[1], True), Hex($aWonThreeStarAtkRprt[2], 6), $aWonThreeStarAtkRprt[3]) Then $starsearned += 1
 	SetLog("Stars earned: " & $starsearned)
 
-	;xbenk
-	If $starsearned >= 1 Then
-		$eWinlose = "VICTORY"
-	Else
-		$eWinlose = "DEFEAT"
-	EndIf
-	SetLog("RESULT: " & $eWinlose)
-
-	;xbenk
 	Local $AtkLogTxt
 	$AtkLogTxt = "" & _NowTime(4) & "|"
-	$AtkLogTxt &= StringFormat("%4d", $g_aiCurrentLoot[$eLootTrophy]) & "|"
-	$AtkLogTxt &= StringFormat("%3d", $g_iSearchCount) & "|"
-	$AtkLogTxt &= StringFormat("%2d", $eTHLevel) & "|"
-	$AtkLogTxt &= StringFormat("%2d", $g_iSearchTrophy) & "|"
-	If ($eLootPerc = 100) Then
-		$AtkLogTxt &= StringFormat("%3d", $eLootPerc) & "|"
-	Else
-		$AtkLogTxt &= StringFormat("%2d", $eLootPerc) & "%|"
-	EndIf
+	$AtkLogTxt &= StringFormat("%5d", $g_aiCurrentLoot[$eLootTrophy]) & "|"
+	$AtkLogTxt &= StringFormat("%6d", $g_iSearchCount) & "|"
+	$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootGold]) & "|"
+	$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootElixir]) & "|"
+	$AtkLogTxt &= StringFormat("%7d", $g_iStatsLastAttack[$eLootDarkElixir]) & "|"
 	$AtkLogTxt &= StringFormat("%3d", $g_iStatsLastAttack[$eLootTrophy]) & "|"
 	$AtkLogTxt &= StringFormat("%1d", $starsearned) & "|"
-	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsLastAttack[$eLootGold]/1000)) & "K|"
-	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsLastAttack[$eLootElixir]/1000)) & "K|"
-	$AtkLogTxt &= StringFormat("%4d", $g_iStatsLastAttack[$eLootDarkElixir]) & "|"
-
-	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsBonusLast[$eLootGold]/1000)) & "K|"
-	$AtkLogTxt &= StringFormat("%3d", ($g_iStatsBonusLast[$eLootElixir]/1000)) & "K|"
+	$AtkLogTxt &= StringFormat("%6d", $g_iStatsBonusLast[$eLootGold]) & "|"
+	$AtkLogTxt &= StringFormat("%6d", $g_iStatsBonusLast[$eLootElixir]) & "|"
 	$AtkLogTxt &= StringFormat("%4d", $g_iStatsBonusLast[$eLootDarkElixir]) & "|"
 	$AtkLogTxt &= $g_asLeagueDetailsShort & "|"
-	;xbenk till here
 
 	Local $AtkLogTxtExtend
 	$AtkLogTxtExtend = "|"
@@ -212,7 +193,7 @@ Func AttackReport()
 	EndIf
 
 	; rename or delete zombie
-	If $g_iDebugDeadBaseImage = 1 Then
+	If $g_bDebugDeadBaseImage Then
 		setZombie($g_iStatsLastAttack[$eLootElixir])
 	EndIf
 
